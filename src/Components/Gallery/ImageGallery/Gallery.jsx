@@ -62,6 +62,7 @@ class ImageGallery extends Component {
 
   handlePictureSelect = (imageURL, imageALT) => {
     this.props.onClick(imageURL, imageALT);
+    console.log(imageURL);
   };
 
   renderGallery = () => {
@@ -71,6 +72,7 @@ class ImageGallery extends Component {
           <ImageGalleryItem
             key={id}
             src={webformatURL}
+            largeImageURL={largeImageURL}
             alt={tags}
             onClick={this.handlePictureSelect}
           />

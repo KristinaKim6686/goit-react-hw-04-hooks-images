@@ -41,22 +41,18 @@ class App extends Component {
   };
 
   render() {
-    const { largeImageURL, query, page, showModal } = this.state;
+    const { largeImageURL, query, page, showModal, imageAlt } = this.state;
     return (
       <div className="mainContainer">
         <SearchBar onFormSubmit={this.handleSearchSubmit} />
         <ToastContainer autoClose={2000} />
-        <ImageGallery
-          query={query}
-          page={page}
-          getSelectedPic={this.toggleModal}
-        />
+        <ImageGallery query={query} page={page} onClick={this.onOpenModal} />
         {query && <LoadMoreButton onLoadMore={this.handleLoadMore} />}
         {showModal && (
           <Modal
             closeModal={this.toggleModal}
             src={largeImageURL}
-            // alt={imageAlt}
+            alt={imageAlt}
           />
         )}
       </div>

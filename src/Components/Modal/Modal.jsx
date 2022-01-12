@@ -29,7 +29,7 @@ class Modal extends Component {
       <Overlay onClick={this.handleBackdropClick}>
         <ImageHolder>
           {this.props.children}
-          <img src={this.state.url} alt={alt} />
+          <img src={this.state.largeImageURL} alt={alt} />
         </ImageHolder>
       </Overlay>,
       modalRoot
