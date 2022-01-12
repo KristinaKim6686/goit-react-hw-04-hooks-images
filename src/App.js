@@ -12,7 +12,9 @@ class App extends Component {
   state = {
     query: "",
     page: 1,
-    selecdedPicture: null,
+    showModal: false,
+    largeImageURL: "",
+    imageAlt: "",
   };
   handleSearchSubmit = (query, page) => {
     this.setState({ query: query, page: 1 });
@@ -23,34 +25,38 @@ class App extends Component {
   };
 
   handleLoadMore = () => {
-    console.log(this.page);
     this.setState((prevState) => ({ page: prevState.page + 1 }));
   };
 
-  handleOpenModal = (selectedPic) => {
-    this.setState({ selectedPicture: selectedPic });
+  onOpenModal = (url, alt) => {
+    this.setState({ largeImageURL: url, imageAlt: alt });
+
+    this.toggleModal();
   };
-  handleCloseModal = () => {
-    this.setState({ selectedPicture: null });
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
   };
 
   render() {
+    const { largeImageURL, query, page, showModal } = this.state;
     return (
       <div className="mainContainer">
         <SearchBar onFormSubmit={this.handleSearchSubmit} />
         <ToastContainer autoClose={2000} />
         <ImageGallery
-          query={this.state.query}
-          page={this.state.page}
-          getSelectedPic={this.handleOpenModal}
+          query={query}
+          page={page}
+          getSelectedPic={this.toggleModal}
         />
-        {this.state.query && (
-          <LoadMoreButton onLoadMore={this.handleLoadMore} />
-        )}
-        {this.state.selecdedPicture && (
+        {query && <LoadMoreButton onLoadMore={this.handleLoadMore} />}
+        {showModal && (
           <Modal
-          //  closeModal={this.handleCloseModal}
-          //  url={this.state.selecdedPicture}
+            closeModal={this.toggleModal}
+            src={largeImageURL}
+            // alt={imageAlt}
           />
         )}
       </div>

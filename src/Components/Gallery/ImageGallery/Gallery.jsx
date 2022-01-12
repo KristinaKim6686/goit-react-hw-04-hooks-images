@@ -60,8 +60,8 @@ class ImageGallery extends Component {
     return;
   }
 
-  handlePictureSelect = (url) => {
-    this.props.getSelectedPic(url);
+  handlePictureSelect = (imageURL, imageALT) => {
+    this.props.onClick(imageURL, imageALT);
   };
 
   renderGallery = () => {
@@ -72,7 +72,7 @@ class ImageGallery extends Component {
             key={id}
             src={webformatURL}
             alt={tags}
-            onPictureClick={() => this.handlePictureSelect(largeImageURL)}
+            onClick={this.handlePictureSelect}
           />
         ))}
       </Gallery>
