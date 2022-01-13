@@ -4,7 +4,7 @@ import { GalleryItem, Image } from "./GalleryItem.styled";
 
 class ImageGalleryItem extends Component {
   onPictureClick = () => {
-    this.props.onClick(this.props.src, this.props.alt);
+    this.props.onClick(this.props.largeImageURL, this.props.alt);
     console.log(this.props);
   };
   render() {
