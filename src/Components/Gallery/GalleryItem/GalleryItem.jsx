@@ -5,6 +5,7 @@ import { GalleryItem, Image } from "./GalleryItem.styled";
 class ImageGalleryItem extends Component {
   onPictureClick = () => {
     this.props.onClick(this.props.src, this.props.alt);
+    console.log(this.props);
   };
   render() {
     const { src, alt } = this.props;
