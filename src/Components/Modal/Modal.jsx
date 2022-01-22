@@ -5,7 +5,6 @@ import { Overlay, ImageHolder } from "./Modal.styled";
 const modalRoot = document.querySelector("#modal-root");
 
 class Modal extends Component {
-  state = {};
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown);
   }
@@ -24,12 +23,12 @@ class Modal extends Component {
     }
   };
   render() {
-    const { src, tags, largeImageURL } = this.props;
+    const { src, alt } = this.props;
     return createPortal(
       <Overlay onClick={this.handleBackdropClick}>
         <ImageHolder>
           {this.props.children}
-          <img src={src} alt={tags} />
+          <img src={src} alt={alt} />
         </ImageHolder>
       </Overlay>,
       modalRoot

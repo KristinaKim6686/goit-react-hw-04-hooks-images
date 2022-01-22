@@ -18,7 +18,7 @@ class SearchBar extends Component {
       toast.error("Your query is empty. Please enter correct query.");
       return;
     }
-    this.props.onFormSubmit(this.state.query);
+    this.props.onSubmit(this.state.query);
     this.setState({ query: "" });
   };
 
@@ -31,6 +31,7 @@ class SearchBar extends Component {
             type="text"
             autocomplete="off"
             autoFocus
+            value={this.state.query}
             placeholder="Search images and photos"
             onChange={this.handleInputChange}
           />
@@ -42,5 +43,5 @@ class SearchBar extends Component {
 export default SearchBar;
 
 SearchBar.propTypes = {
-  onFormSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

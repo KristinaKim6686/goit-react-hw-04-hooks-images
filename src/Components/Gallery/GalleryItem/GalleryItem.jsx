@@ -4,22 +4,27 @@ import { GalleryItem, Image } from "./GalleryItem.styled";
 
 class ImageGalleryItem extends Component {
   onPictureClick = () => {
-    this.props.onClick(this.props.largeImageURL, this.props.alt);
+    this.props.onClick(this.props.largeImageURL, this.props.tags);
     console.log(this.props);
   };
   render() {
-    const { src, alt } = this.props;
+    const { id, webformatURL, tags } = this.props;
     return (
-      <GalleryItem>
-        <Image src={src} alt={alt} onClick={this.onPictureClick} />
+      <GalleryItem key={id}>
+        <Image
+          id={id}
+          src={webformatURL}
+          alt={tags}
+          onClick={this.onPictureClick}
+        />
       </GalleryItem>
     );
   }
 }
 
 ImageGalleryItem.propTypes = {
-  src: PropTypes.string.isRequired,
-  alt: PropTypes.string.isRequired,
+  webformatURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 export default ImageGalleryItem;

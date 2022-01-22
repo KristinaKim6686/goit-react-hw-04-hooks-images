@@ -2,6 +2,7 @@ import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
+import API from "./utils/Api";
 import SearchBar from "./Components/SearchBar";
 import { Component } from "react/cjs/react.production.min";
 import ImageGallery from "./Components/Gallery/ImageGallery/Gallery.jsx";
@@ -15,21 +16,51 @@ class App extends Component {
     showModal: false,
     largeImageURL: "",
     imageAlt: "",
-  };
-  handleSearchSubmit = (query, page) => {
-    this.setState({ query: query, page: 1 });
-  };
-
-  handleGalleryUpdate = (gallery) => {
-    this.setState({ pictures: gallery });
+    gallery: [],
+    error: null,
+    status: "idle",
   };
 
-  handleLoadMore = () => {
-    this.setState((prevState) => ({ page: prevState.page + 1 }));
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.query !== this.state.query) {
+      this.setState({ status: "pending" });
+      this.searchImages();
+    }
+    if (prevState.page !== this.state.page) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  searchImages = () => {
+    const { query, page } = this.state;
+    API.getImages(query, page)
+      .then((response) =>
+        this.setState(({ gallery, page }) => ({
+          gallery: [...gallery, ...response],
+          status: "resolved",
+          page: page + 1,
+        }))
+      )
+      .catch((error) => this.state({ error, status: "rejected" }));
+  };
+
+  onLoadMore = () => {
+    this.searchImages();
+  };
+
+  handleFormSubmit = (query) => {
+    this.setState({
+      query: query,
+      page: 1,
+      gallery: [],
+    });
   };
 
   onOpenModal = (url, alt) => {
-    this.setState({ largeImageURL: url, imageAlt: alt });
+    this.setState({ largeImageURL: url, alt: alt });
 
     this.toggleModal();
   };
@@ -41,18 +72,31 @@ class App extends Component {
   };
 
   render() {
-    const { largeImageURL, query, page, showModal, imageAlt } = this.state;
+    const {
+      largeImageURL,
+      error,
+      gallery,
+      status,
+      query,
+      showModal,
+      imageAlt,
+    } = this.state;
     return (
       <div className="mainContainer">
-        <SearchBar onFormSubmit={this.handleSearchSubmit} />
+        <SearchBar query={query} onSubmit={this.handleFormSubmit} />
         <ToastContainer autoClose={2000} />
-        <ImageGallery query={query} page={page} onClick={this.onOpenModal} />
-        {query && <LoadMoreButton onLoadMore={this.handleLoadMore} />}
+        <ImageGallery
+          status={status}
+          error={error}
+          gallery={gallery}
+          onClick={this.onOpenModal}
+          onLoadMore={this.onLoadMore}
+        />
         {showModal && (
           <Modal
-            closeModal={this.toggleModal}
             src={largeImageURL}
             alt={imageAlt}
+            closeModal={this.toggleModal}
           />
         )}
       </div>
