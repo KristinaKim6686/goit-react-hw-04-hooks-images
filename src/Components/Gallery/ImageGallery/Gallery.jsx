@@ -4,7 +4,7 @@ import ImageGalleryItem from "../GalleryItem/GalleryItem";
 import { Gallery, SpinnerWrapper } from "./Gallery.styled";
 import Loader from "../../Loader";
 import { GalleryItem } from "../GalleryItem/GalleryItem.styled";
-import { Button } from "../../SearchBar/SearchBar.styled";
+import { Button } from "../../Button/Button.styled";
 
 class ImageGallery extends Component {
   onPictureClick = (imageURL, alt) => {
@@ -45,7 +45,7 @@ class ImageGallery extends Component {
               />
             ))}
           </Gallery>
-          <Button onClick={onLoadMore} />
+          <Button onClick={onLoadMore}>Load more</Button>
         </>
       );
     }
