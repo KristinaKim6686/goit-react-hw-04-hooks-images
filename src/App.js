@@ -4,104 +4,83 @@ import { ToastContainer } from "react-toastify";
 
 import API from "./utils/Api";
 import SearchBar from "./Components/SearchBar";
-import { Component } from "react/cjs/react.production.min";
+import { useState, useEffect } from "react";
 import ImageGallery from "./Components/Gallery/ImageGallery/Gallery.jsx";
 import LoadMoreButton from "./Components/Button";
 import Modal from "./Components/Modal";
 
-class App extends Component {
-  state = {
-    query: "",
-    page: 1,
-    showModal: false,
-    largeImageURL: "",
-    imageAlt: "",
-    gallery: [],
-    error: null,
-    status: "idle",
-  };
+function App() {
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [largeImageURL, setLargeImageURL] = useState("");
+  const [imageAlt, setImageAlt] = useState("");
+  const [gallery, setGallery] = useState([]);
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState("idle");
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.setState({ status: "pending" });
-      this.searchImages();
+  useEffect(() => {
+    if (query !== "") {
+      setStatus("pending");
+      searchImages();
     }
-    if (prevState.page !== this.state.page) {
+    if (page !== setPage) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: "smooth",
       });
     }
-  }
+  }, [query]);
 
-  searchImages = () => {
-    const { query, page } = this.state;
+  const searchImages = () => {
     API.getImages(query, page)
-      .then((response) =>
-        this.setState(({ gallery, page }) => ({
-          gallery: [...gallery, ...response],
-          status: "resolved",
-          page: page + 1,
-        }))
-      )
-      .catch((error) => this.state({ error, status: "rejected" }));
+      .then((response) => {
+        setGallery([...gallery, ...response]);
+        setStatus("resolved");
+        setPage((page) => page + 1);
+      })
+      .catch((error) => {
+        setError(error);
+        setStatus("rejected");
+      });
   };
 
-  onLoadMore = () => {
-    this.searchImages();
+  const onLoadMore = () => {
+    searchImages();
   };
 
-  handleFormSubmit = (query) => {
-    this.setState({
-      query: query,
-      page: 1,
-      gallery: [],
-    });
+  const handleFormSubmit = (query) => {
+    setQuery(query);
+    setPage(1);
+    setGallery([]);
   };
 
-  onOpenModal = (url, alt) => {
-    this.setState({ largeImageURL: url, alt: alt });
-
-    this.toggleModal();
+  const onOpenModal = (url, alt) => {
+    setLargeImageURL(url);
+    setImageAlt(alt);
+    toggleModal();
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  const toggleModal = () => {
+    setShowModal((showModal) => !showModal);
   };
 
-  render() {
-    const {
-      largeImageURL,
-      error,
-      gallery,
-      status,
-      query,
-      showModal,
-      imageAlt,
-    } = this.state;
-    return (
-      <div className="mainContainer">
-        <SearchBar query={query} onSubmit={this.handleFormSubmit} />
-        <ToastContainer autoClose={2000} />
-        <ImageGallery
-          status={status}
-          error={error}
-          gallery={gallery}
-          onClick={this.onOpenModal}
-          onLoadMore={this.onLoadMore}
-        />
-        {showModal && (
-          <Modal
-            src={largeImageURL}
-            alt={imageAlt}
-            closeModal={this.toggleModal}
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className="mainContainer">
+      <SearchBar query={query} onSubmit={handleFormSubmit} />
+      <ToastContainer autoClose={2000} />
+      <ImageGallery
+        status={status}
+        error={error}
+        gallery={gallery}
+        onClick={onOpenModal}
+        onLoadMore={onLoadMore}
+      />
+      {showModal && (
+        <Modal src={largeImageURL} alt={imageAlt} closeModal={toggleModal} />
+      )}
+    </div>
+  );
 }
 
 export default App;
